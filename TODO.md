@@ -11,8 +11,8 @@ Ajouter tests pour le serveur
  - Revoyer un message d'erreur au serveur si les données n'ont pas été chargée (route 404)
 
 ### =====
-gestion des grosses ressource ?
-gestion des gros volumes d'utilisateurs ?
-Comprendre api du gouv
+gestion des grosses ressource ? 
+gestion des gros volumes d'utilisateurs ? 
+Comprendre api du gouv 
 
 Evaluer la pertinence du modèle simple client/serveur
