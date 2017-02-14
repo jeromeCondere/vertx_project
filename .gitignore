@@ -5,3 +5,4 @@ bin/
 *#
 *~
 .settings/
+src/main/java/com/myvertx/app/AppB*.java
