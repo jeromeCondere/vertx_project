@@ -3,12 +3,16 @@ package com.myvertx.app;
 import java.io.IOException;
 import java.net.ServerSocket;
 
+import org.junit.Before;
+import org.junit.After;
+
 import io.vertx.core.*;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.TestContext;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 
 /**
  * Unit test for simple App.
