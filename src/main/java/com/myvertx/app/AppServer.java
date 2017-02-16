@@ -16,21 +16,21 @@ public class AppServer extends AbstractVerticle {
     
 		Router router = Router.router(vertx);
 
-	    router.route().handler(req -> {
-	    	req.response().end("accueil");
-	    });
+	    router.route().handler(BodyHandler.create());
 	    router.get("/aliments").handler(this::handleGetAliments);
 	    router.get("/aliment/:alimentID").handler(this::handleGetAlimentById);
 	    router.get("/aliment/:alimentID/glucide").handler(this::handleGetAlimentGlucide);
 	    router.get("/aliment/:alimentID/lipide").handler(this::handleGetAlimentLipide);
 	    router.get("/aliment/:alimentID/protide").handler(this::handleGetAlimentProtide);
+	    router.get("/aliment/nom/:nom").handler(this::handleGetAlimentProtide);
+	    
 	    server =  vertx.createHttpServer().requestHandler(router::accept).listen(8080);
     }
 	  private void handleGetAlimentById(RoutingContext routingContext)
 	  {
 		    String alimentID = routingContext.request().getParam("alimentID");
-		    HttpServerResponse response = routingContext.response();
-		    response.end("get aliment by id");
+			HttpServerResponse response = routingContext.response();
+			response.end("get aliment by id");
 	  }
 	  //fonction a supprimer à terme
 	  private void handleGetAliments(RoutingContext routingContext) 
