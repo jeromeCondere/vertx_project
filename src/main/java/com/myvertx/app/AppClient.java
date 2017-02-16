@@ -2,6 +2,7 @@ package com.myvertx.app;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
+import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
 
 /**
@@ -9,11 +10,12 @@ import io.vertx.core.http.HttpClientOptions;
 */
 public class AppClient extends AbstractVerticle 
 {
+	HttpClient client;
 	@Override
 	 public void start() throws Exception 
 	 {
 			HttpClientOptions options = new HttpClientOptions();
-			vertx.createHttpClient(options).getNow(80, "www.google.com", "/", resp -> {
+			client = vertx.createHttpClient(options).getNow(80, "www.google.com", "/", resp -> {
 			      System.out.println("Got response " + resp.statusCode());
 			      });
 	 }
@@ -22,6 +24,7 @@ public class AppClient extends AbstractVerticle
 	public void stop(Future<Void> stopFuture) 
 	{
 		stopFuture.complete();
+		client.close();
 	}
 			
 }

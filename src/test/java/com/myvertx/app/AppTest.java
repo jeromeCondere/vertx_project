@@ -46,6 +46,11 @@ public class AppTest   extends TestCase
 	    fail();
 	 }
 	@Test
+	 public void testServerRessourceAvailable() 
+	 {
+	    fail();
+	 }
+	@Test
 	 public void testServerGetAlimentbyId() 
 	 {
 	    fail();
@@ -57,6 +62,21 @@ public class AppTest   extends TestCase
 	 }
 	@Test
 	 public void testServerGetAlimentbyName() 
+	 {
+	    fail();
+	 }
+	@Test
+	 public void testServerGetAlimentGlucide() 
+	 {
+	    fail();
+	 }	
+	@Test
+	 public void testServerGetAlimentLipide() 
+	 {
+	    fail();
+	 }	
+	@Test
+	 public void testServerGetAlimentProtide() 
 	 {
 	    fail();
 	 }	
