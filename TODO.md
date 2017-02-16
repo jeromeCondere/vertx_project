@@ -24,3 +24,5 @@ Séparer en tâches unitaire afin d'obtenir les routes les plus utiles
 - obtenir le produit par son nom
 - obtenir la valeur d'une colonne associée à un identifiant.
 
+### ressource csv
+charger le csv
