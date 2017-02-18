@@ -10,7 +10,8 @@ public class App extends AbstractVerticle
 {
 	 @Override
 	 public void start() throws Exception {
-	    	vertx.deployVerticle("com.myvertx.app.AppClient");
+	    	//vertx.deployVerticle("com.myvertx.app.AppClient");
 	        vertx.deployVerticle("com.myvertx.app.AppServer");
+	        vertx.deployVerticle("com.myvertx.app.AppCSVServer");
 	    }
 }
