@@ -3,91 +3,92 @@ package com.myvertx.app;
 import java.io.IOException;
 import java.net.ServerSocket;
 
+import javax.xml.ws.Response;
 
 import org.junit.*;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import io.vertx.core.*;
+import io.vertx.core.http.*;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
-
+import io.vertx.ext.unit.junit.VertxUnitRunner;
 import junit.framework.TestCase;
-
+import com.myvertx.app.*;
 
 /**
  * Unit test for simple App.
  */
-public class AppTest   extends TestCase
+@RunWith(VertxUnitRunner.class)
+public class AppTest
 {
 	Vertx vertx;
 	int port;
 	@Before
-	public void setUp(TestContext context) throws IOException 
+	public void setUp(TestContext context)
 	{
 	  vertx = Vertx.vertx();
-	  ServerSocket socket = new ServerSocket(0);
-	  port = socket.getLocalPort();
-	  socket.close();
-	  DeploymentOptions options = new DeploymentOptions()
-	      .setConfig(new JsonObject().put("http.port", port)
-	      );
-	  vertx.deployVerticle("com.myvertx.app.AppClient", context.asyncAssertSuccess());
-	  vertx.deployVerticle("com.myvertx.app.AppServer", options, context.asyncAssertSuccess());
+	  vertx.deployVerticle("com.myvertx.app.AppCSVServer", context.asyncAssertSuccess());
+	  vertx.deployVerticle("com.myvertx.app.AppServer", context.asyncAssertSuccess());
 	}
 	
+
 	@Test
-	 public void testClientConnection() 
+	 public void testServerRessourceAvailable(TestContext context) 
 	 {
-	    fail();
+		  Async async = context.async();
+		  HttpClientOptions options = new HttpClientOptions().setDefaultHost("localhost").setDefaultPort(8081);
+		  HttpClient client = vertx.createHttpClient(); 
+		  client.post("ressource/availaible", response -> {
+			  response.bodyHandler(body -> {
+					 context.assertEquals("error", body.toJsonObject().getString("message"));
+					 async.complete();
+				 
+			  });
+		  }).putHeader("content-type", "application/json")
+		  	.end(new JsonObject().put("path", "cujk.kh")
+		  						 .encodePrettily());
 	 }
 	@Test
-	 public void testClientDownload() 
+	 public void testServerGetAlimentbyId(TestContext context) 
 	 {
-	    fail();
+		context.fail();
 	 }
 	@Test
-	 public void testServerRessourceAvailable() 
+	 public void testServerGetAllAliments(TestContext context) 
 	 {
-	    fail();
+	    context.fail();
 	 }
 	@Test
-	 public void testServerGetAlimentbyId() 
+	 public void testServerGetAlimentbyName(TestContext context) 
 	 {
-	    fail();
+		context.fail();
 	 }
 	@Test
-	 public void testServerGetAllAliments() 
+	 public void testServerGetAlimentGlucide(TestContext context) 
 	 {
-	    fail();
-	 }
-	@Test
-	 public void testServerGetAlimentbyName() 
-	 {
-	    fail();
-	 }
-	@Test
-	 public void testServerGetAlimentGlucide() 
-	 {
-	    fail();
+		context.fail();
 	 }	
 	@Test
-	 public void testServerGetAlimentLipide() 
+	 public void testServerGetAlimentLipide(TestContext context) 
 	 {
-	    fail();
+		context.fail();
 	 }	
 	@Test
-	 public void testServerGetAlimentProtide() 
+	 public void testServerGetAlimentProtide(TestContext context) 
 	 {
-	    fail();
+		context.fail();
 	 }	
 	
 	
 	
 	
 	
-	@After
+	/*@After
 	public void tearDown(TestContext context) 
 	{
 	  vertx.close(context.asyncAssertSuccess());
-	}
+	}*/
 }

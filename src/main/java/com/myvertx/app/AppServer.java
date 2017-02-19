@@ -11,7 +11,7 @@ import io.vertx.ext.web.handler.BodyHandler;
 public class AppServer extends AbstractVerticle {
 	private HttpServer server;
 	@Override
-    public void start() throws Exception 
+    public void start(final Future future) throws Exception 
 	{
     
 		Router router = Router.router(vertx);
@@ -27,7 +27,13 @@ public class AppServer extends AbstractVerticle {
 	    router.get("/aliment/:alimentID/protide").handler(this::handleGetAlimentProtide);
 	    router.get("/aliment/nom/:nom").handler(this::handleGetAlimentByName);
 	    
-	    server =  vertx.createHttpServer().requestHandler(router::accept).listen(8080);
+	    server =  vertx.createHttpServer().requestHandler(router::accept).listen(8080, done -> {
+	          if (done.failed()) {
+	              future.fail(done.cause());
+	            } else {
+	              future.complete();
+	            }
+	          });
     }
 	  private void handleGetAlimentById(RoutingContext routingContext)
 	  {
