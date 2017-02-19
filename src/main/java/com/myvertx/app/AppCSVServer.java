@@ -46,14 +46,16 @@ public class AppCSVServer extends AbstractVerticle{
 	private void handleIsRessourceAvailable(RoutingContext routingContext)
 	{
 		HttpServerResponse response = routingContext.response();
+		response.putHeader("content-type", "application/json");
 		JsonObject requestJson = routingContext.getBodyAsJson();
 			// on verifie si le fichier existe
 			vertx.fileSystem().exists(requestJson.getString("path"), resultExist -> {
-				if(resultExist.succeeded())
+				if(resultExist.succeeded() && resultExist.result())
 				{
+					System.out.println(requestJson.encodePrettily());
 					//s'il existe on verifie si on peut l'ouvrir
 					OpenOptions options = new OpenOptions();
-					vertx.fileSystem().open(requestJson.getString("path"), options, resultOpen ->{
+					vertx.fileSystem().open(requestJson.getString("path"), options, resultOpen -> {
 						if(resultOpen.succeeded())
 							response.end(successMessage());
 						else
@@ -72,6 +74,7 @@ public class AppCSVServer extends AbstractVerticle{
 		String field = routingContext.request().getParam("field");
 		String value = routingContext.request().getParam("value");
 		HttpServerResponse response = routingContext.response();
+		response.putHeader("content-type", "application/json");
 		vertx.fileSystem().readFile("data/Table_Ciqual_2016.csv", result -> {
 		    if (result.succeeded()) {
 		        Buffer buffer = result.result();

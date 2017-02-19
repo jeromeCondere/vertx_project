@@ -35,20 +35,35 @@ public class AppTest
 	}
 	
 
+	// TODO corriger pour le path
+	// fonctionne avec path = iji
 	@Test
 	 public void testServerRessourceAvailable(TestContext context) 
 	 {
+		  //verifie qu'un fichier non existant n'est pas un ressource disponible
 		  Async async = context.async();
 		  HttpClientOptions options = new HttpClientOptions().setDefaultHost("localhost").setDefaultPort(8081);
-		  HttpClient client = vertx.createHttpClient(); 
-		  client.post("ressource/availaible", response -> {
+		  HttpClient client = vertx.createHttpClient(options); 
+		  client.post("/ressource/availaible", response -> {
 			  response.bodyHandler(body -> {
+				  	System.out.println(body.toJsonObject().encodePrettily());
 					 context.assertEquals("error", body.toJsonObject().getString("message"));
 					 async.complete();
-				 
 			  });
 		  }).putHeader("content-type", "application/json")
-		  	.end(new JsonObject().put("path", "cujk.kh")
+		  	.end(new JsonObject().put("path", "data/cujk.kh")
+		  						 .encodePrettily());
+		  
+		  //verifie qu'un fichier existant est bien une ressource disponible
+		  Async async2 = context.async();
+		  client.post("/ressource/availaible", response -> {
+			  response.bodyHandler(body -> {
+				  	System.out.println(body.toJsonObject().encodePrettily());
+					 context.assertEquals("success", body.toJsonObject().getString("message"));
+					 async2.complete();
+			  });
+		  }).putHeader("content-type", "application/json")
+		  	.end(new JsonObject().put("path", "data/test.txt")
 		  						 .encodePrettily());
 	 }
 	@Test
@@ -86,9 +101,9 @@ public class AppTest
 	
 	
 	
-	/*@After
+	@After
 	public void tearDown(TestContext context) 
 	{
 	  vertx.close(context.asyncAssertSuccess());
-	}*/
+	}
 }
