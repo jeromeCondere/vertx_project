@@ -46,19 +46,17 @@ public class AppTest
 		  HttpClient client = vertx.createHttpClient(options); 
 		  client.post("/ressource/availaible", response -> {
 			  response.bodyHandler(body -> {
-				  	System.out.println(body.toJsonObject().encodePrettily());
 					 context.assertEquals("error", body.toJsonObject().getString("message"));
 					 async.complete();
 			  });
 		  }).putHeader("content-type", "application/json")
-		  	.end(new JsonObject().put("path", "data/cujk.kh")
+		  	.end(new JsonObject().put("path", "cubijk.kh")
 		  						 .encodePrettily());
 		  
 		  //verifie qu'un fichier existant est bien une ressource disponible
 		  Async async2 = context.async();
 		  client.post("/ressource/availaible", response -> {
 			  response.bodyHandler(body -> {
-				  	System.out.println(body.toJsonObject().encodePrettily());
 					 context.assertEquals("success", body.toJsonObject().getString("message"));
 					 async2.complete();
 			  });
