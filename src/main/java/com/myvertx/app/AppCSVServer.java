@@ -155,7 +155,7 @@ public class AppCSVServer extends AbstractVerticle{
 		  		);
 		
 	}
-	/** fonction qui convertit une ligne du cv en */
+	/** fonction qui convertit une ligne du csv en JsonObject */
 	public static JsonObject csvLineToJson(String cvsLine, List<String> header) {
 		JsonObject json = new JsonObject();
 		for( String field : header)
@@ -167,10 +167,14 @@ public class AppCSVServer extends AbstractVerticle{
 		}
 		return json;
     }
-	public static String csvLineGetFieldValue(String cvsLine, String field, List<String> header)
+	
+	/** revient à faire <br>
+	 * SELECT field FROM csvline WHERE field = value
+	 * */
+	public static String csvLineGetFieldValue(String csvLine, String field, List<String> header)
 	{
 		try {
-			return parseLine(cvsLine).get(header.indexOf(field));
+			return parseLine(csvLine).get(header.indexOf(field));
 		}
 		catch (IndexOutOfBoundsException e)
 		{
