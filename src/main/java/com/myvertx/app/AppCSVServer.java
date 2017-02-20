@@ -8,10 +8,13 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.file.OpenOptions;
+import io.vertx.core.http.HttpClient;
+import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
@@ -20,8 +23,10 @@ import io.vertx.ext.web.handler.BodyHandler;
 public class AppCSVServer extends AbstractVerticle{
 	
 	private HttpServer server;
+	private HttpClient client;
     private static final char DEFAULT_SEPARATOR = ';';
     private static final char DEFAULT_QUOTE = '"';
+    private int port = 8081;
     private List<String> header;
     private long requestTimeout = 5000;
 	@Override
@@ -33,29 +38,31 @@ public class AppCSVServer extends AbstractVerticle{
 	    router.route("/").handler(req -> {
 	    	req.response().end("accueil");
 	    });
+	    
 	    router.post("/ressource/availaible").handler(this::handleIsRessourceAvailable);
-	    router.get("/field/:field/value/:value").handler(this::handleGetLineByColumnValue);
-	    server =  vertx.createHttpServer().requestHandler(router::accept).listen(8081,done -> {
+	    router.post("/line/by/columnValue").handler(this::handleGetLineByColumnValue);
+	    server =  vertx.createHttpServer().requestHandler(router::accept).listen(port,done -> {
 	          if (done.failed()) {
 	              future.fail(done.cause());
 	            } else {
 	              future.complete();
 	            }
 	          });
+	    HttpClientOptions options = new HttpClientOptions().setDefaultHost("localhost").setDefaultPort(8081);
+		client = vertx.createHttpClient(options);
 	}
 	private void handleIsRessourceAvailable(RoutingContext routingContext)
 	{
 		HttpServerResponse response = routingContext.response();
 		response.putHeader("content-type", "application/json");
-		JsonObject requestJson = routingContext.getBodyAsJson();
+		JsonObject bodyJson = routingContext.getBodyAsJson();
 			// on verifie si le fichier existe
-			vertx.fileSystem().exists(requestJson.getString("path"), resultExist -> {
+			vertx.fileSystem().exists(bodyJson.getString("path"), resultExist -> {
 				if(resultExist.succeeded() && resultExist.result())
 				{
-					System.out.println(requestJson.encodePrettily());
 					//s'il existe on verifie si on peut l'ouvrir
 					OpenOptions options = new OpenOptions();
-					vertx.fileSystem().open(requestJson.getString("path"), options, resultOpen -> {
+					vertx.fileSystem().open(bodyJson.getString("path"), options, resultOpen -> {
 						if(resultOpen.succeeded())
 							response.end(successMessage());
 						else
@@ -71,32 +78,84 @@ public class AppCSVServer extends AbstractVerticle{
 	/**handler permettant de retourner la line associée à une valeur donné pour un certain champ */
 	private void handleGetLineByColumnValue(RoutingContext routingContext)
 	{
-		String field = routingContext.request().getParam("field");
-		String value = routingContext.request().getParam("value");
+		
+		
 		HttpServerResponse response = routingContext.response();
+		JsonObject bodyRequestJson = routingContext.getBodyAsJson();
+		
+		// TODO regler le problème lorsque le body n'est pas envoyé
+		if(bodyRequestJson == null || bodyRequestJson.isEmpty())
+			response.end(errorMessage("no body provided"));
+		
+		
+		
+		String field = bodyRequestJson.getString("field");
+		String value = bodyRequestJson.getString("value");
 		response.putHeader("content-type", "application/json");
-		vertx.fileSystem().readFile("data/Table_Ciqual_2016.csv", result -> {
-		    if (result.succeeded()) {
-		        Buffer buffer = result.result();
-		        
-		        
-		       String[] csvStringList = buffer.toString().split("\n");
-		       header = parseLine(csvStringList[0]);
-
-		       for(String line : csvStringList)
-		       {
-		    	   String lineFieldValue = csvLineGetFieldValue(line, field, header);
-		    	   if(lineFieldValue != null && lineFieldValue.equals(value))
-		    	   {
-		    		   response.end(csvLineToJson(line, header).encodePrettily());
-		    	   }
-		       }
-		       response.setStatusCode(400).end(errorMessage("line not found"));
-		       
-		    } else {
-		        System.err.println("Oh oh ..." + result.cause());
-		    }
-		});
+		if(field == null || field.equals(""))
+			response.end(errorMessage("no field provided"));
+		
+		/*Le Json fourni est de cette forme
+		 * {
+		 *  "field": field,
+		 *  "value: value,
+		 *  "file": path
+		 * 
+		 */
+		//on regarde si la ressource est disponible
+		
+		client.post("/ressource/availaible", responseAvailaible -> {
+			responseAvailaible.bodyHandler(bodyIsAvailable -> {
+				
+				JsonObject bodyIsAvailableJson = bodyIsAvailable.toJsonObject();
+				//si la ressource existe et est disonible
+				if(bodyIsAvailableJson.getString("message").equals("success"))
+				{
+					vertx.fileSystem().readFile(bodyRequestJson.getString("file"), result -> {
+					    if (result.succeeded()) {
+					        Buffer buffer = result.result();
+					        
+					        
+					       String[] csvStringList = buffer.toString().split("\n");
+					       //on recupère le header
+					       header = parseLine(csvStringList[0]);
+					       /* on recherche la ligne dont la colonne est egale à la valeur donnée
+					       	  equivalent Select * from file where column = field
+					       */
+					       JsonArray resultLines = new JsonArray();
+					       for(String line : csvStringList)
+					       {
+					    	   String lineFieldValue = csvLineGetFieldValue(line, field, header);
+					    	   // lorsqu'une ligne est trouvée on l'ajoute a l'array
+					    	   if(lineFieldValue != null && lineFieldValue.equals(value))
+					    	   {
+					    		   resultLines.add(csvLineToJson(line, header).encodePrettily()) ;
+					    	   }
+					       }
+					       
+					       if(resultLines.isEmpty())
+					    	   response.setStatusCode(400).end(errorMessage("line not found"));
+					       else
+					    	   response.end(resultLines.encodePrettily());
+					       
+					       
+					    } else {
+					        System.err.println("Oh oh ..." + result.cause());
+					    }
+					});
+					
+					
+				}
+				//si la ressource n'existe pas
+				else
+					response.end(bodyIsAvailable.toJsonObject().encodePrettily());
+			  });
+		  }).putHeader("content-type", "application/json")
+			.setTimeout(4000)
+		  	.end(new JsonObject()
+		  		.put("path", bodyRequestJson.getString("file"))
+		  		.encodePrettily()
+		  		);
 		
 	}
 	/** fonction qui convertit une ligne du cv en */

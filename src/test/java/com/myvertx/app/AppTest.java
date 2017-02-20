@@ -52,7 +52,6 @@ public class AppTest
 		  }).putHeader("content-type", "application/json")
 		  	.end(new JsonObject().put("path", "cubijk.kh")
 		  						 .encodePrettily());
-		  
 		  //verifie qu'un fichier existant est bien une ressource disponible
 		  Async async2 = context.async();
 		  client.post("/ressource/availaible", response -> {
