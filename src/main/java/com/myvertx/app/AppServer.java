@@ -26,7 +26,7 @@ public class AppServer extends AbstractVerticle {
 	    	req.response().end("accueil");
 	    });
 	    router.get("/aliments").handler(this::handleGetAliments);
-	    router.get("/aliment/:alimentID").handler(this::handleGetAlimentById);
+	    router.post("/aliment/:alimentID").handler(this::handleGetAlimentById);
 	    router.get("/aliment/:alimentID/glucide").handler(this::handleGetAlimentGlucide);
 	    router.get("/aliment/:alimentID/lipide").handler(this::handleGetAlimentLipide);
 	    router.get("/aliment/:alimentID/protide").handler(this::handleGetAlimentProtide);
@@ -43,6 +43,7 @@ public class AppServer extends AbstractVerticle {
 	    HttpClientOptions options = new HttpClientOptions().setDefaultHost("localhost").setDefaultPort(8081);
 		client = vertx.createHttpClient(options);
     }
+	  /**Permet d'obtenir les informations sur l'aliment à partir de son id*/
 	  private void handleGetAlimentById(RoutingContext routingContext)
 	  {
 		    String alimentID = routingContext.request().getParam("alimentID");
@@ -55,13 +56,15 @@ public class AppServer extends AbstractVerticle {
 						{
 							//s'il n'y a pas eu d'erreur
 							JsonArray result = bodyResponseClient.toJsonArray();
+							System.out.println(result.getString(0));
 							if(result.isEmpty())
 								response.end(result.encode());
 							else
-								response.end(result.getJsonObject(0).encodePrettily());
+								response.end(result.getString(0));
 						}
 						else
 						{
+							System.out.println("vuuyv");
 							//sinon on affiche le message
 							response.setStatusCode(400).end(bodyResponseClient.toJsonObject().encodePrettily());
 						}
@@ -83,14 +86,20 @@ public class AppServer extends AbstractVerticle {
 	  {
 		    routingContext.response().end("all aliments");
 	  }
+	  
+	  /**Permet d'obtenir les protides de l'aliment à partir de son id*/
 	  private void handleGetAlimentProtide(RoutingContext routingContext) 
 	  {
 		    routingContext.response().end("protide");
 	  }
+	  
+	  /**Permet d'obtenir les lipides de l'aliment à partir de son id*/
 	  private void handleGetAlimentLipide(RoutingContext routingContext) 
 	  {
 		    routingContext.response().end("lipide");
 	  }
+	  
+	  /**Permet d'obtenir les glucides de l'aliment à partir de son id*/
 	  private void handleGetAlimentGlucide(RoutingContext routingContext) 
 	  {
 		    routingContext.response().end("lipide");
