@@ -56,7 +56,6 @@ public class AppServer extends AbstractVerticle {
 						{
 							//s'il n'y a pas eu d'erreur
 							JsonArray result = bodyResponseClient.toJsonArray();
-							System.out.println(result.getString(0));
 							if(result.isEmpty())
 								response.end(result.encode());
 							else
@@ -64,7 +63,6 @@ public class AppServer extends AbstractVerticle {
 						}
 						else
 						{
-							System.out.println("vuuyv");
 							//sinon on affiche le message
 							response.setStatusCode(400).end(bodyResponseClient.toJsonObject().encodePrettily());
 						}
@@ -104,6 +102,7 @@ public class AppServer extends AbstractVerticle {
 	  {
 		    routingContext.response().end("lipide");
 	  }
+	  
 	  private void handleGetAlimentByName(RoutingContext routingContext) 
 	  {
 		    routingContext.response().end("nom");
