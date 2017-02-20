@@ -2,14 +2,19 @@ package com.myvertx.app;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
+import io.vertx.core.http.HttpClient;
+import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerResponse;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
 
 public class AppServer extends AbstractVerticle {
 	private HttpServer server;
+	private HttpClient client;
 	@Override
     public void start(final Future future) throws Exception 
 	{
@@ -34,12 +39,44 @@ public class AppServer extends AbstractVerticle {
 	              future.complete();
 	            }
 	          });
+	    
+	    HttpClientOptions options = new HttpClientOptions().setDefaultHost("localhost").setDefaultPort(8081);
+		client = vertx.createHttpClient(options);
     }
 	  private void handleGetAlimentById(RoutingContext routingContext)
 	  {
 		    String alimentID = routingContext.request().getParam("alimentID");
+		    JsonObject bodyRequestJson = routingContext.getBodyAsJson();
 			HttpServerResponse response = routingContext.response();
-			response.end("get aliment by id");
+			
+			client.post("/line/by/columnValue",responseClient -> {
+					responseClient.bodyHandler(bodyResponseClient -> {
+						if(responseClient.statusCode() == 200)
+						{
+							//s'il n'y a pas eu d'erreur
+							JsonArray result = bodyResponseClient.toJsonArray();
+							if(result.isEmpty())
+								response.end(result.encode());
+							else
+								response.end(result.getJsonObject(0).encodePrettily());
+						}
+						else
+						{
+							//sinon on affiche le message
+							response.setStatusCode(400).end(bodyResponseClient.toJsonObject().encodePrettily());
+						}
+					});
+				
+			})
+			.putHeader("content-type", "application/json")
+			.setTimeout(4000)
+			.end(new JsonObject()
+			  		.put("file", bodyRequestJson.getString("file"))
+			  		.put("field", "ORIGFDCD")
+			  		.put("value", alimentID)
+			  		.encodePrettily());
+			
+			
 	  }
 	  //fonction a supprimer à terme
 	  private void handleGetAliments(RoutingContext routingContext) 

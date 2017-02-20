@@ -133,10 +133,7 @@ public class AppCSVServer extends AbstractVerticle{
 					    	   }
 					       }
 					       
-					       if(resultLines.isEmpty())
-					    	   response.setStatusCode(400).end(errorMessage("line not found"));
-					       else
-					    	   response.end(resultLines.encodePrettily());
+					       response.end(resultLines.encodePrettily());
 					       
 					       
 					    } else {
@@ -148,7 +145,7 @@ public class AppCSVServer extends AbstractVerticle{
 				}
 				//si la ressource n'existe pas
 				else
-					response.end(bodyIsAvailable.toJsonObject().encodePrettily());
+					response.setStatusCode(400).end(bodyIsAvailable.toJsonObject().encodePrettily());
 			  });
 		  }).putHeader("content-type", "application/json")
 			.setTimeout(4000)
