@@ -22,6 +22,7 @@ public class AppDB extends AbstractVerticle {
 	    JsonObject mongoconfig = new JsonObject()
 	            .put("connection_string", uri)
 	            .put("db_name", DB_NAME);
+	    		
 	    client = MongoClient.createShared(vertx, mongoconfig);
 	    final EventBus bus = vertx.eventBus();
 		 vertx.eventBus().consumer("mongo.import.file", message -> {

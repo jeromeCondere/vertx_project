@@ -7,7 +7,8 @@ public class MainVerticle extends AbstractVerticle {
 	@Override
 	public void start() throws Exception 
 	{
-		Vertx.vertx().deployVerticle("com.myvertx.app.AppDB");
+		//Utiliser cluster
+		//Vertx.vertx().deployVerticle("com.myvertx.app.AppDB");
 	}
 
 	@Override
