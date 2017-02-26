@@ -18,7 +18,7 @@ public class App extends AbstractVerticle
 		 vertx.eventBus().consumer("db.import", message -> {
 	           System.out.println("import du fichier: "+message.body());
 	     });
-		 vertx.eventBus().consumer("launch.service", message -> {
+		 vertx.eventBus().consumer("launch.service.query", message -> {
 	           System.out.println("lancement du service: "+message.body());
 	     });
 	}
