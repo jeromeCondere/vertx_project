@@ -5,6 +5,7 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.Message;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.mongo.MongoClient;
 
@@ -23,12 +24,22 @@ public class AppDB extends AbstractVerticle {
 	            .put("db_name", DB_NAME);
 	    client = MongoClient.createShared(vertx, mongoconfig);
 	    final EventBus bus = vertx.eventBus();
-		 vertx.eventBus().consumer("db.import", message -> {
-	           System.out.println("import du fichier: "+message.body());
+		 vertx.eventBus().consumer("mongo.import.file", message -> {
+	          
 	     });
-		 vertx.eventBus().consumer("launch.service.query", message -> {
-	           System.out.println("lancement du service: "+message.body());
+		 vertx.eventBus().consumer("mongo.query", message -> {
+			 	JsonObject jsonMessage = (JsonObject) message.body();
+	           client.runCommand(jsonMessage.getString("command"),
+	        		     jsonMessage.getJsonObject("parameters") ,res -> {
+	        		    	 if (res.succeeded()) {
+	        		    		    JsonArray resArr = res.result().getJsonArray("result");
+	        		    		    // sauvegarder dans un fichier temporaire
+	        		    		  } else {
+	        		    		    res.cause().printStackTrace();
+	        		    		  }
+	        		     });
 	     });
+		 
 
 	}
 	public void doQuery(Message query)
