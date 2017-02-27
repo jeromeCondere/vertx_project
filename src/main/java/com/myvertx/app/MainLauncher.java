@@ -25,6 +25,6 @@ public class MainLauncher  {
             }
         });
 
-        System.out.println("End of Shop Launcher");
+        System.out.println("End of the Launcher");
     }
 }

@@ -5,14 +5,14 @@ import io.vertx.core.Future;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.json.JsonObject;
 
-abstract public class AbstractDBVerticle extends AbstractVerticle implements DBService{
-	
+abstract public class AbstractDBVerticle extends AbstractVerticle implements DBService 
+{
 	protected String dbName="mongo";
 	
 	@Override
 	final public void start(Future<Void> startFuture) throws Exception 
 	{
-	   
+		 //traitement d'un insert
 	   vertx.eventBus().consumer("db."+dbName+".insert", message -> {
 	          insert(message, result -> {
 	        	  if(result.succeeded())
@@ -30,6 +30,7 @@ abstract public class AbstractDBVerticle extends AbstractVerticle implements DBS
 	          });
 	     });
 	   
+	   //traitement d'une query
 	   vertx.eventBus().consumer("db."+dbName+".query", message -> {
 		   query(message, result -> {
 			   if(result.succeeded())
@@ -44,6 +45,7 @@ abstract public class AbstractDBVerticle extends AbstractVerticle implements DBS
 		   });
 	   });
 	   
+	   //traitement d'une sauvegarde d'un fichier
 	   vertx.eventBus().consumer("db."+dbName+".save", message -> {
 		   save(message, result -> {
 			   if(result.succeeded())
