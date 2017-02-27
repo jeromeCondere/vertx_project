@@ -9,7 +9,7 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.mongo.MongoClient;
 
-public class AppDB extends AbstractVerticle {
+public class MongoDBVerticle extends AbstractDBVerticle {
 	MongoClient client;
 	private static int MONGO_PORT = 27017;
 	private static int HTTP_PORT = 28017;
@@ -25,10 +25,11 @@ public class AppDB extends AbstractVerticle {
 	    		
 	    client = MongoClient.createShared(vertx, mongoconfig);
 	    final EventBus bus = vertx.eventBus();
-		 vertx.eventBus().consumer("mongo.import.file", message -> {
+		 vertx.eventBus().consumer("db.mongo.insert", message -> {
 	          
 	     });
-		 vertx.eventBus().consumer("mongo.query", message -> {
+		 
+		 vertx.eventBus().consumer("db.mongo.query", message -> {
 			 	JsonObject jsonMessage = (JsonObject) message.body();
 	           client.runCommand(jsonMessage.getString("command"),
 	        		     jsonMessage.getJsonObject("parameters") ,res -> {
@@ -41,16 +42,40 @@ public class AppDB extends AbstractVerticle {
 	        		     });
 	     });
 		 
+		 vertx.eventBus().consumer("db.mongo.save", message -> {
+			 
+		 });
+		 
+		 vertx.eventBus().consumer("db.mongo.delete", message -> {
+			 
+		 });
+		 
 
-	}
-	public void doQuery(Message query)
-	{
-		
 	}
 	@Override
 	public void stop() throws Exception 
 	{
 		
+	}
+	@Override
+	public void save(Object document) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void insert(Object object) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void delete(Object document) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public Object query(Object query) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }
