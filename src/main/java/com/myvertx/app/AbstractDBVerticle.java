@@ -5,13 +5,20 @@ import io.vertx.core.Future;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.json.JsonObject;
 
+
+/**La classe AbstractDBVerticle permet de mettre en place plusieurs systèmes de BDD <br>
+ * et donc de gerer plusieurs types de formats de données
+ *  */
 abstract public class AbstractDBVerticle extends AbstractVerticle implements DBService 
 {
 	protected String dbName="mongo";
 	
+	abstract protected void setup();
+	
 	@Override
 	final public void start(Future<Void> startFuture) throws Exception 
 	{
+		setup();
 		 //traitement d'un insert
 	   vertx.eventBus().consumer("db."+dbName+".insert", message -> {
 	          insert(message, result -> {
@@ -35,6 +42,7 @@ abstract public class AbstractDBVerticle extends AbstractVerticle implements DBS
 		   query(message, result -> {
 			   if(result.succeeded())
 			   {
+				   //on répond le resultat de la query
 				   message.reply(result.result());
 			   }
 			   else
@@ -63,6 +71,7 @@ abstract public class AbstractDBVerticle extends AbstractVerticle implements DBS
 		   });
 	   });
 	   
+	 //traitement de la suppression
 	   vertx.eventBus().consumer("db."+dbName+".delete", message -> {
 		   delete(message, result -> {
 			   if(result.succeeded())

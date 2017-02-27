@@ -13,15 +13,23 @@ public class App extends AbstractVerticle
 		 * Les macros ne communiquent pas directement avec la base de
 		 * données ils passent par les services de l'App.
 		 */
+		//l'utilisateur fait appel au différents services proposés par l'App
+		//MAIS n'a JAMAIS accès aux services de la BDD
+		
+		//TODO rajouter un abstract classe DBAccessor
+		
 		final EventBus bus = vertx.eventBus();
 		 vertx.eventBus().consumer("launch.service.delete", message -> {
 	           System.out.println("delete: "+message.body());
 	     });
 		 vertx.eventBus().consumer("launch.service.query", message -> {
-	           System.out.println("lancement du service: "+message.body());
+	           System.out.println("lancement de la query: "+message.body());
 	     });
-		 vertx.eventBus().consumer("launch.service.", message -> {
+		 vertx.eventBus().consumer("launch.service.save", message -> {
 	           System.out.println("delete: "+message.body());
+	     });
+		 vertx.eventBus().consumer("launch.service.insert", message -> {
+	           System.out.println("insert: "+message.body());
 	     });
 	}
 
