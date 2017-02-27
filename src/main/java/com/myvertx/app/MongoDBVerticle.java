@@ -2,7 +2,9 @@ package com.myvertx.app;
 
 
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.AsyncResult;
 import io.vertx.core.DeploymentOptions;
+import io.vertx.core.Handler;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.JsonArray;
@@ -52,30 +54,25 @@ public class MongoDBVerticle extends AbstractDBVerticle {
 		 
 
 	}
-	@Override
-	public void stop() throws Exception 
-	{
-		
-	}
-	@Override
-	public void save(Object document) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void insert(Object object) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void delete(Object document) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public Object query(Object query) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
+	@Override
+	public void save(Object document, Handler<AsyncResult<Void>> result) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void insert(Object object, Handler<AsyncResult<Boolean>> result) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void delete(Object document, Handler<AsyncResult<Boolean>> result) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void query(Object query, Handler<AsyncResult<Object>> result) {
+		// TODO Auto-generated method stub
+		
+	}
 }

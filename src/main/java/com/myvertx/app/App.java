@@ -13,13 +13,15 @@ public class App extends AbstractVerticle
 		 * Les macros ne communiquent pas directement avec la base de
 		 * données ils passent par les services de l'App.
 		 */
-		System.out.println("Start of Container");
 		final EventBus bus = vertx.eventBus();
-		 vertx.eventBus().consumer("db.import", message -> {
-	           System.out.println("import du fichier: "+message.body());
+		 vertx.eventBus().consumer("launch.service.delete", message -> {
+	           System.out.println("delete: "+message.body());
 	     });
 		 vertx.eventBus().consumer("launch.service.query", message -> {
 	           System.out.println("lancement du service: "+message.body());
+	     });
+		 vertx.eventBus().consumer("launch.service.", message -> {
+	           System.out.println("delete: "+message.body());
 	     });
 	}
 
