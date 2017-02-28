@@ -41,9 +41,15 @@ public class MongoDBVerticle extends AbstractDBVerticle {
 			JsonObject body = (JsonObject) object.body();
 			JsonObject document = body.getJsonObject("document");
 			
-			client.insert(collection, document , res -> {
+			client.insert(collection, document , new Handler<AsyncResult<String>>(){
+
+				@Override
+				public void handle(AsyncResult<String> arg0) {
+					
+					//result.handle(arg0);
+				}
 				
-			});
+			} );
 		}
 	
 	}
