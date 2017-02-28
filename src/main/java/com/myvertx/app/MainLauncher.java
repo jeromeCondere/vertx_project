@@ -16,12 +16,13 @@ public class MainLauncher  {
         
         final ClusterManager mgr = new HazelcastClusterManager();
         final VertxOptions options = new VertxOptions().setClusterManager(mgr);
+        												
         Vertx.clusteredVertx(options, res -> {
             if (res.succeeded()) {
                 
                 final Vertx vertx = res.result();
                 //on deploie tous les vertices ici!
-                vertx.deployVerticle(MongoDBVerticle.class.getName(),deploymentOptions);
+                //vertx.deployVerticle(MongoDBVerticle.class.getName(),deploymentOptions);
                 vertx.deployVerticle(App.class.getName(),deploymentOptions);
                 
             } else {

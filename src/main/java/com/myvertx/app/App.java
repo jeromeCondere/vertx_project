@@ -1,11 +1,18 @@
 package com.myvertx.app;
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Future;
+import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.EventBus;
 
 public class App extends AbstractVerticle
 {
+	private static int DEFAULT_SEND_TIMOUT = 70000;
+	
+	/** le developpeur lorsqu'il crée son verticle <br>
+	 * fait appel aux service de l'App
+	 * */
 	@Override
-	public void start() throws Exception 
+	public void start(Future<Void> startFuture) throws Exception 
 	{
 		/*
 		 * avec l'event bus l'application est plus scalable
@@ -16,20 +23,45 @@ public class App extends AbstractVerticle
 		//l'utilisateur fait appel au différents services proposés par l'App
 		//MAIS n'a JAMAIS accès aux services de la BDD
 		
-		//TODO rajouter un abstract classe DBAccessor
 		
-		final EventBus bus = vertx.eventBus();
+		DeliveryOptions deliveryOptions = new DeliveryOptions().setSendTimeout(DEFAULT_SEND_TIMOUT);
+		
+		//TODO rajouter un abstract classe DBAccessor par dessus
+		
 		 vertx.eventBus().consumer("launch.service.delete", message -> {
-	           System.out.println("delete: "+message.body());
+			 vertx.eventBus().send("db.mongo.delete", message, deliveryOptions ,reponse -> {
+				 if(reponse.succeeded())
+					 message.reply(reponse.result());
+				 else
+					 System.out.println(reponse.cause() );
+			 });      
 	     });
+		 
 		 vertx.eventBus().consumer("launch.service.query", message -> {
-	           System.out.println("lancement de la query: "+message.body());
+			 vertx.eventBus().send("db.mongo.query", message, deliveryOptions ,reponse -> {
+				 if(reponse.succeeded())
+					 message.reply(reponse.result());
+				 else
+					 System.out.println(reponse.cause() );
+			 });  
 	     });
+		 
 		 vertx.eventBus().consumer("launch.service.save", message -> {
-	           System.out.println("delete: "+message.body());
+			 vertx.eventBus().send("db.mongo.save", message, deliveryOptions ,reponse -> {
+				 if(reponse.succeeded())
+					 message.reply(reponse.result());
+				 else
+					 System.out.println(reponse.cause() );
+			 });  
 	     });
+		 
 		 vertx.eventBus().consumer("launch.service.insert", message -> {
-	           System.out.println("insert: "+message.body());
+			 vertx.eventBus().send("db.mongo.insert", message, deliveryOptions ,reponse -> {
+				 if(reponse.succeeded())
+					 message.reply(reponse.result());
+				 else
+					 System.out.println(reponse.cause() );
+			 });  
 	     });
 	}
 

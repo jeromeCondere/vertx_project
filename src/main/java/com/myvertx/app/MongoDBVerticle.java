@@ -1,6 +1,7 @@
 package com.myvertx.app;
 
 
+import io.netty.handler.codec.json.JsonObjectDecoder;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.DeploymentOptions;
@@ -17,6 +18,7 @@ public class MongoDBVerticle extends AbstractDBVerticle {
 	private static int HTTP_PORT = 28017;
 	private static String uri = "mongodb://localhost:27017";
 	private static String DB_NAME = "db";
+	private static String collection = "test";
 	@Override
 	protected void setup()
 	{
@@ -27,19 +29,43 @@ public class MongoDBVerticle extends AbstractDBVerticle {
 
 	}
 	@Override
-	public void save(Message document, Handler<AsyncResult<Boolean>> result) {
+	public void save(Message document, Handler<AsyncResult<Object>> result) {
 		// TODO utiliser client pour sauvegarder
 		
 	}
 	@Override
-	public void insert(Message object, Handler<AsyncResult<Boolean>> result) {
-		// TODO utiliser client pour inserer
+	public void insert(Message object, Handler<AsyncResult<Object>> result) {
 		
+		if(object.headers().get("action").equals("insert"))
+		{
+			JsonObject body = (JsonObject) object.body();
+			JsonObject document = body.getJsonObject("document");
+			
+			client.insert(collection, document , res -> {
+				
+			});
+		}
+	
 	}
 	@Override
-	public void delete(Message document, Handler<AsyncResult<Boolean>> result) {
-		// TODO Auto-generated method stub
+	public void delete(Message object, Handler<AsyncResult<Object>> result) {
 		
+		
+		if(object.headers().get("action").equals("delete"))
+		{
+			JsonObject body = (JsonObject) object.body();
+			JsonObject query = body.getJsonObject("query");
+		client.removeDocuments(collection, query, res -> {
+			  if (res.succeeded()) 
+			  {
+			    System.out.println("document supprimé");
+			  } 
+			  else 
+			  {
+			    res.cause().printStackTrace();
+			  }
+			});
+		}
 	}
 	@Override
 	public void query(Message query, Handler<AsyncResult<Object>> result) {

@@ -24,10 +24,7 @@ abstract public class AbstractDBVerticle extends AbstractVerticle implements DBS
 	          insert(message, result -> {
 	        	  if(result.succeeded())
 	        	  { 
-	        		  if(result.result())
-	        			  message.reply(infoMessage("insert","done"));
-	        		  else
-	        			  message.reply(infoMessage("insert","failed"));
+	        		message.reply(infoMessage("insert","done"));
 	        	  }
 	        	  else
 	        	  {
@@ -58,10 +55,7 @@ abstract public class AbstractDBVerticle extends AbstractVerticle implements DBS
 		   save(message, result -> {
 			   if(result.succeeded())
 			   {
-				   if(result.result())
-	        			  message.reply(infoMessage("save","done"));
-	        		  else
-	        			  message.reply(infoMessage("save","failed"));
+				   message.reply(infoMessage("save","done"));
 			   }
 			   else
 			   {
@@ -76,10 +70,7 @@ abstract public class AbstractDBVerticle extends AbstractVerticle implements DBS
 		   delete(message, result -> {
 			   if(result.succeeded())
 			   {
-				   if(result.result())
-	        			  message.reply(infoMessage("delete","done"));
-	        		  else
-	        			  message.reply(infoMessage("delete","failed"));
+				   message.reply(infoMessage("delete","done"));
 			   }
 			   else
 			   {
