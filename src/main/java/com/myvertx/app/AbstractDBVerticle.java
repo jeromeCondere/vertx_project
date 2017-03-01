@@ -21,69 +21,29 @@ abstract public class AbstractDBVerticle extends AbstractVerticle implements DBS
 		setup();
 		 //traitement d'un insert
 	   vertx.eventBus().consumer("db."+dbName+".insert", message -> {
-	          insert(message, result -> {
-	        	  if(result.succeeded())
-	        	  { 
-	        		message.reply(infoMessage("insert","done"));
-	        	  }
-	        	  else
-	        	  {
-	        		  System.out.println("erreur: "+result.cause());
-	        		  message.reply(infoMessage("insert","failed"));
-	        	  }
-	          });
+	          insert(message);
 	     });
 	   
 	   //traitement d'une query
 	   vertx.eventBus().consumer("db."+dbName+".query", message -> {
-		   query(message, result -> {
-			   if(result.succeeded())
-			   {
-				   //on répond le resultat de la query
-				   message.reply(result.result());
-			   }
-			   else
-			   {
-				   System.out.println("erreur: "+result.cause());
-				   message.reply(infoMessage("query","failed"));
-			   }
-		   });
+		   query(message);
 	   });
 	   
 	   //traitement d'une sauvegarde d'un fichier
 	   vertx.eventBus().consumer("db."+dbName+".save", message -> {
-		   save(message, result -> {
-			   if(result.succeeded())
-			   {
-				   message.reply(infoMessage("save","done"));
-			   }
-			   else
-			   {
-				   System.out.println("erreur: "+result.cause());
-				   message.reply(infoMessage("save","failed"));
-			   }
-		   });
+		   save(message);
 	   });
 	   
 	 //traitement de la suppression
 	   vertx.eventBus().consumer("db."+dbName+".delete", message -> {
-		   delete(message, result -> {
-			   if(result.succeeded())
-			   {
-				   message.reply(infoMessage("delete","done"));
-			   }
-			   else
-			   {
-				   System.out.println("erreur: "+result.cause());
-				   message.reply(infoMessage("delete","failed"));
-			   }
-		   });
+		   delete(message);
 	   });
 	   
 	   startFuture.complete();
 	   
 	}
-	private JsonObject infoMessage(String action, String state)
+	
+	final protected JsonObject infoMessage(String action, String state)
 	{
 		return new JsonObject().put("action", action)
 							   .put("state", state);

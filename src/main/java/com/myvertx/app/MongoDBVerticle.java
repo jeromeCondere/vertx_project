@@ -28,54 +28,83 @@ public class MongoDBVerticle extends AbstractDBVerticle {
 
 	}
 	@Override
-	public void save(Message document, Handler<AsyncResult<Object>> result) {
-		// TODO utiliser client pour sauvegarder
+	public void save(Message saveMessage) 
+	{
+		if(saveMessage.headers().get("action").equals("save"))
+		{
+			JsonObject body = (JsonObject) saveMessage.body();
+			JsonObject document = body.getJsonObject("document");
+			
+			client.save(collection, document , result -> {
+				if (result.succeeded()) 
+				  {
+				    System.out.println("document saved");
+				    saveMessage.reply(infoMessage("save", "done")
+				    								.put("id", result.result()));
+				  } 
+				  else 
+				  {
+					  result.cause().printStackTrace();
+					  saveMessage.reply(infoMessage("save", "error"));
+				  }
+			});
+		}
 		
 	}
 	@Override
-	public void  insert(Message object, Handler<AsyncResult<Object>> result) {
+	public void  insert(Message insertMessage) 
+	{
 		
-		if(object.headers().get("action").equals("insert"))
+		if(insertMessage.headers().get("action").equals("insert"))
 		{
-			JsonObject body = (JsonObject) object.body();
+			JsonObject body = (JsonObject) insertMessage.body();
 			JsonObject document = body.getJsonObject("document");
 			
-			client.insert(collection, document , new Handler<AsyncResult<String>>(){
-
-				@Override
-				public void handle(AsyncResult<String> arg0) {
-					
-					//result.handle(arg0);
-				}
-				
-			} );
+			client.insert(collection, document , result -> {
+				if (result.succeeded()) 
+				  {
+				    System.out.println("document deleted");
+				    insertMessage.reply(infoMessage("insert", "done")
+				    								.put("id", result.result()));
+				  } 
+				  else 
+				  {
+					  result.cause().printStackTrace();
+				    insertMessage.reply(infoMessage("insert", "error"));
+				  }
+			});
 		}
 	
 	}
 	@Override
-	public void delete(Message object, Handler<AsyncResult<Object>> result) {
+	public void delete(Message deleteMessage) 
+	{
 		
 		
-		if(object.headers().get("action").equals("delete"))
+		if(deleteMessage.headers().get("action").equals("delete"))
 		{
-			JsonObject body = (JsonObject) object.body();
+			JsonObject body = (JsonObject) deleteMessage.body();
 			JsonObject query = body.getJsonObject("query");
-		client.removeDocuments(collection, query, res -> {
+			client.removeDocuments(collection, query, res -> {
 			  if (res.succeeded()) 
 			  {
-			    System.out.println("document supprimé");
+			    System.out.println("document inserted");
+			    deleteMessage.reply(infoMessage("delete", "done"));
 			  } 
 			  else 
 			  {
 			    res.cause().printStackTrace();
+			    deleteMessage.reply(infoMessage("delete", "error"));
 			  }
 			});
 		}
 	}
+	
+	//TODO traiter le cas où le resultat de la requete est énorme
 	@Override
-	public void query(Message query, Handler<AsyncResult<Object>> result) {
-		// TODO Auto-generated method stub
-		
+	public void query(Message queryMessage) 
+	{
+				
 	}
 
 }

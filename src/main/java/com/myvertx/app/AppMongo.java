@@ -7,7 +7,7 @@ import io.vertx.core.eventbus.EventBus;
 public class AppMongo extends AbstractApp
 {	
 	/* le developpeur lorsqu'il crée son verticle <br>
-	 * fait appel aux service de l'App
+	 * fait appel aux services de l'App
 	 * */
 	@Override
 	protected void setup()

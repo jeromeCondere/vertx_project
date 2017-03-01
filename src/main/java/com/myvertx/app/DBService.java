@@ -3,10 +3,17 @@ package com.myvertx.app;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 import io.vertx.core.eventbus.Message;
-
+/**Dans les méthodes l'utilisateur doit fournir une réponse au message*/
 public interface DBService {
-	public void save(Message document, Handler<AsyncResult<Object>> result);
-	public void insert(Message object, Handler<AsyncResult<Object>> result);
-	public void delete(Message document, Handler<AsyncResult<Object>> result);
-	public void query(Message query, Handler<AsyncResult<Object>> result);
+	/**Sauvegarde d'un document*/
+	public void save(Message saveMessage);
+	
+	/**Insertion*/
+	public void insert(Message insertMessage);
+	
+	/**Suppression d'un document ou d'un objet de la BDD*/
+	public void delete(Message deleteMessage);
+	
+	/**Requete*/
+	public void query(Message queryMessage);
 }
