@@ -13,17 +13,16 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.mongo.MongoClient;
 
 public class MongoDBVerticle extends AbstractDBVerticle {
+	
 	MongoClient client;
-	private static int MONGO_PORT = 27017;
-	private static int HTTP_PORT = 28017;
-	private static String uri = "mongodb://localhost:27017";
+	private static String DEFAULT_URI = "mongodb://localhost:27017";
 	private static String DB_NAME = "db";
 	private static String collection = "test";
 	@Override
 	protected void setup()
 	{
 	    JsonObject mongoconfig = new JsonObject()
-	            .put("connection_string", uri)
+	            .put("connection_string", DEFAULT_URI)
 	            .put("db_name", DB_NAME);	
 	    client = MongoClient.createShared(vertx, mongoconfig);
 
@@ -34,7 +33,7 @@ public class MongoDBVerticle extends AbstractDBVerticle {
 		
 	}
 	@Override
-	public void insert(Message object, Handler<AsyncResult<Object>> result) {
+	public void  insert(Message object, Handler<AsyncResult<Object>> result) {
 		
 		if(object.headers().get("action").equals("insert"))
 		{

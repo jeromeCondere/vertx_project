@@ -1,18 +1,23 @@
 package com.myvertx.app;
+
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.eventbus.DeliveryOptions;
-import io.vertx.core.eventbus.EventBus;
 
-public class App extends AbstractVerticle
-{
+public abstract class AbstractApp extends AbstractVerticle {
+
 	private static int DEFAULT_SEND_TIMOUT = 70000;
+	protected String dbName;
+	protected DeliveryOptions deliveryOptions;
 	
-	/** le developpeur lorsqu'il crée son verticle <br>
-	 * fait appel aux service de l'App
+	/**Cette methode est utilisée pour faire les initialisations <br>
+	 * le nom de la BDD (dbName) <br>
+	 * les options d'envoi (deliveryOptions)
 	 * */
+	abstract protected void setup();
+	
 	@Override
-	public void start(Future<Void> startFuture) throws Exception 
+	final public void start(Future<Void> startFuture) throws Exception 
 	{
 		/*
 		 * avec l'event bus l'application est plus scalable
@@ -23,13 +28,12 @@ public class App extends AbstractVerticle
 		//l'utilisateur fait appel au différents services proposés par l'App
 		//MAIS n'a JAMAIS accès aux services de la BDD
 		
+		setup();
 		
-		DeliveryOptions deliveryOptions = new DeliveryOptions().setSendTimeout(DEFAULT_SEND_TIMOUT);
+		deliveryOptions = new DeliveryOptions().setSendTimeout(DEFAULT_SEND_TIMOUT);
 		
-		//TODO rajouter un abstract classe DBAccessor par dessus
-		
-		 vertx.eventBus().consumer("launch.service.delete", message -> {
-			 vertx.eventBus().send("db.mongo.delete", message, deliveryOptions ,reponse -> {
+		vertx.eventBus().consumer("launch.service."+dbName+".delete", message -> {
+			 vertx.eventBus().send("db."+dbName+".delete", message, deliveryOptions ,reponse -> {
 				 if(reponse.succeeded())
 					 message.reply(reponse.result());
 				 else
@@ -37,8 +41,8 @@ public class App extends AbstractVerticle
 			 });      
 	     });
 		 
-		 vertx.eventBus().consumer("launch.service.query", message -> {
-			 vertx.eventBus().send("db.mongo.query", message, deliveryOptions ,reponse -> {
+		 vertx.eventBus().consumer("launch.service."+dbName+".query", message -> {
+			 vertx.eventBus().send("db."+dbName+".query", message, deliveryOptions ,reponse -> {
 				 if(reponse.succeeded())
 					 message.reply(reponse.result());
 				 else
@@ -46,8 +50,8 @@ public class App extends AbstractVerticle
 			 });  
 	     });
 		 
-		 vertx.eventBus().consumer("launch.service.save", message -> {
-			 vertx.eventBus().send("db.mongo.save", message, deliveryOptions ,reponse -> {
+		 vertx.eventBus().consumer("launch.service."+dbName+".save", message -> {
+			 vertx.eventBus().send("db."+dbName+".save", message, deliveryOptions ,reponse -> {
 				 if(reponse.succeeded())
 					 message.reply(reponse.result());
 				 else
@@ -55,8 +59,8 @@ public class App extends AbstractVerticle
 			 });  
 	     });
 		 
-		 vertx.eventBus().consumer("launch.service.insert", message -> {
-			 vertx.eventBus().send("db.mongo.insert", message, deliveryOptions ,reponse -> {
+		 vertx.eventBus().consumer("launch.service."+dbName+".insert", message -> {
+			 vertx.eventBus().send("db."+dbName+".insert", message, deliveryOptions ,reponse -> {
 				 if(reponse.succeeded())
 					 message.reply(reponse.result());
 				 else
@@ -64,10 +68,5 @@ public class App extends AbstractVerticle
 			 });  
 	     });
 	}
-
-	@Override
-	public void stop() throws Exception 
-	{
-		System.out.println("Stop of App Verticle");
-	}
+	
 }
