@@ -3,6 +3,8 @@ package com.myvertx.app;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 import io.vertx.core.eventbus.Message;
+
+
 /**Dans les méthodes l'utilisateur doit fournir une réponse au message*/
 public interface DBService 
 {
