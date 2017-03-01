@@ -40,7 +40,6 @@ abstract public class AbstractDBVerticle extends AbstractVerticle implements DBS
 	   });
 	   
 	   startFuture.complete();
-	   
 	}
 	
 	final protected JsonObject infoMessage(String action, String state)

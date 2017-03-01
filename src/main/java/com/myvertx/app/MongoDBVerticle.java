@@ -18,6 +18,7 @@ public class MongoDBVerticle extends AbstractDBVerticle {
 	private static String DEFAULT_URI = "mongodb://localhost:27017";
 	private static String DB_NAME = "db";
 	private static String collection = "test";
+	
 	@Override
 	protected void setup()
 	{
@@ -49,7 +50,6 @@ public class MongoDBVerticle extends AbstractDBVerticle {
 				  }
 			});
 		}
-		
 	}
 	@Override
 	public void  insert(Message insertMessage) 
@@ -74,12 +74,10 @@ public class MongoDBVerticle extends AbstractDBVerticle {
 				  }
 			});
 		}
-	
 	}
 	@Override
 	public void delete(Message deleteMessage) 
 	{
-		
 		
 		if(deleteMessage.headers().get("action").equals("delete"))
 		{
