@@ -42,6 +42,7 @@ public abstract class AbstractApp extends AbstractVerticle {
 	     });
 		 
 		 vertx.eventBus().consumer("launch.service."+dbName+".query", message -> {
+			 
 			 vertx.eventBus().send("db."+dbName+".query", message, deliveryOptions ,reponse -> {
 				 if(reponse.succeeded())
 					 message.reply(reponse.result());

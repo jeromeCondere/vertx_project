@@ -19,4 +19,7 @@ public interface DBService
 	
 	/**Requete*/
 	public void query(Message queryMessage);
+	
+	/**Recherche de documents*/
+	public void find(Message findMessage);
 }

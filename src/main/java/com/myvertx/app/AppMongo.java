@@ -21,6 +21,6 @@ public class AppMongo extends AbstractApp
 	@Override
 	public void stop() throws Exception 
 	{
-		System.out.println("Stop of App Verticle");
+		System.out.println("Stop of the Mongo App Verticle");
 	}
 }

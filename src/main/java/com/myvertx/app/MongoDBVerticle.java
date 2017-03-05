@@ -46,7 +46,7 @@ public class MongoDBVerticle extends AbstractDBVerticle {
 				  else 
 				  {
 					  result.cause().printStackTrace();
-					  saveMessage.reply(infoMessage("save", "error"));
+					  saveMessage.reply(infoMessage("save", "failed"));
 				  }
 			});
 		}
@@ -70,7 +70,7 @@ public class MongoDBVerticle extends AbstractDBVerticle {
 				  else 
 				  {
 					  result.cause().printStackTrace();
-				    insertMessage.reply(infoMessage("insert", "error"));
+				    insertMessage.reply(infoMessage("insert", "failed"));
 				  }
 			});
 		}
@@ -92,7 +92,7 @@ public class MongoDBVerticle extends AbstractDBVerticle {
 			  else 
 			  {
 			    res.cause().printStackTrace();
-			    deleteMessage.reply(infoMessage("delete", "error"));
+			    deleteMessage.reply(infoMessage("delete", "failed"));
 			  }
 			});
 		}
@@ -102,7 +102,7 @@ public class MongoDBVerticle extends AbstractDBVerticle {
 	@Override
 	public void query(Message queryMessage) 
 	{
-		if(queryMessage.headers().get("action").equals("delete"))
+		if(queryMessage.headers().get("action").equals("query"))
 		{
 			JsonObject body = (JsonObject) queryMessage.body();
 			JsonObject query = body.getJsonObject("query");
@@ -112,6 +112,33 @@ public class MongoDBVerticle extends AbstractDBVerticle {
 				//if()
 			});
 		}
+	}
+	@Override
+	public void find(Message findMessage) {
+		if(findMessage.headers().get("action").equals("find"))
+		{
+			JsonObject body = (JsonObject) findMessage.body();
+			JsonObject findQuery = body.getJsonObject("find");
+			
+			//recherche naive
+			client.find(collection, findQuery, res -> {
+				if (res.succeeded()) 
+				  {
+				    findMessage.reply(res.result());
+				  } 
+				  else 
+				  {
+				    res.cause().printStackTrace();
+				    findMessage.reply(infoMessage("delete", "failed"));
+				  }
+			});
+		}
+		
+	}
+	@Override
+	public void stop() throws Exception 
+	{
+		client.close();
 	}
 
 }
