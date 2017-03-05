@@ -1,5 +1,8 @@
-package com.myvertx.app;
+package com.myvertx;
 
+
+import com.myvertx.app.AppMongo;
+import com.myvertx.app.MongoDBVerticle;
 
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;

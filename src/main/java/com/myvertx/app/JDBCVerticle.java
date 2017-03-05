@@ -1,5 +1,7 @@
 package com.myvertx.app;
 
+import com.myvertx.db.AbstractDBVerticle;
+
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.jdbc.JDBCClient;
@@ -55,6 +57,7 @@ public class JDBCVerticle extends AbstractDBVerticle {
 					connection.query(queryString, result -> {
 						
 						
+						connection.close();
 					});
 				}
 				else
@@ -89,6 +92,7 @@ public class JDBCVerticle extends AbstractDBVerticle {
 							result.cause().printStackTrace();
 							executeMessage.reply(infoMessage("execute","failed"));
 						}
+						connection.close();
 					});
 				}
 				else

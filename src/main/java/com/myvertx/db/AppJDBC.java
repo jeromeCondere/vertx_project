@@ -1,4 +1,6 @@
-package com.myvertx.app;
+package com.myvertx.db;
+
+import com.myvertx.app.AbstractApp;
 
 public class AppJDBC extends AbstractApp {
 

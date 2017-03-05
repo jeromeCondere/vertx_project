@@ -1,6 +1,8 @@
 package com.myvertx.app;
 
 
+import com.myvertx.db.AbstractDBVerticle;
+
 import io.netty.handler.codec.json.JsonObjectDecoder;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.AsyncResult;

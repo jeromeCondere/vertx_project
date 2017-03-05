@@ -1,4 +1,4 @@
-package com.myvertx.app;
+package com.myvertx.db;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
