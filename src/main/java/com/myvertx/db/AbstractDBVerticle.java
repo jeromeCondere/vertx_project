@@ -11,7 +11,7 @@ import io.vertx.core.json.JsonObject;
  *  */
 abstract public class AbstractDBVerticle extends AbstractVerticle implements DBService 
 {
-	protected String dbName="mongo";
+	protected String dbName = "mongo";
 	
 	abstract protected void setup();
 	

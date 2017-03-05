@@ -1,14 +1,15 @@
 package com.myvertx;
 
 
-import com.myvertx.app.AppMongo;
-import com.myvertx.app.MongoDBVerticle;
+import com.myvertx.app.*;
+import com.myvertx.db.*;
 
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.spi.cluster.ClusterManager;
 import io.vertx.spi.cluster.hazelcast.HazelcastClusterManager;
+import user.example.AppUser;
 
 
 public class MainLauncher  {
@@ -25,8 +26,11 @@ public class MainLauncher  {
                 
                 final Vertx vertx = res.result();
                 //on deploie tous les vertices ici!
-                vertx.deployVerticle(MongoDBVerticle.class.getName(),deploymentOptions);
-                vertx.deployVerticle(AppMongo.class.getName(),deploymentOptions);
+                //vertx.deployVerticle(MongoDBVerticle.class.getName(),deploymentOptions);
+                //vertx.deployVerticle(AppMongo.class.getName(),deploymentOptions);
+                vertx.deployVerticle(AppJDBC.class.getName());
+                vertx.deployVerticle(JDBCVerticle.class.getName());
+                vertx.deployVerticle(AppUser.class.getName());
                 
             } else {
                 System.out.println("FAIL !!!");

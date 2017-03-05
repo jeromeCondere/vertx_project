@@ -5,6 +5,7 @@ import com.myvertx.db.AbstractDBVerticle;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.jdbc.JDBCClient;
+import io.vertx.ext.sql.ResultSet;
 import io.vertx.ext.sql.SQLConnection;
 
 public class JDBCVerticle extends AbstractDBVerticle {
@@ -54,10 +55,17 @@ public class JDBCVerticle extends AbstractDBVerticle {
 				{
 					String queryString = (String) queryMessage.body();
 					SQLConnection connection = res.result();
-					connection.query(queryString, result -> {
-						
-						
-						connection.close();
+					
+					connection.queryStream(queryString, stream -> {
+						if(stream.succeeded())
+						{
+							// stream to the user
+						}
+						else
+						{
+							stream.cause().printStackTrace();
+							queryMessage.reply(infoMessage("execute","failed"));
+						}
 					});
 				}
 				else
