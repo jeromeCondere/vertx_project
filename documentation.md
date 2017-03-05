@@ -38,4 +38,7 @@ Pour les requetes de type insert, delete ou query le resultat est de la forme
 }
 
 ```
-Avec des informations suplémentaires suivant la nature de la BDD.
+Avec des informations suplémentaires suivant la nature de la BDD (par exemple avec mongoDB on renvoie l'*id* 
+du document concerné par la manipulation).  
+
+Lorsque c'est une requête les données sont transferés via des streams.

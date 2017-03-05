@@ -21,7 +21,7 @@ Comment on fait pour que l'utilisateur ne puisse pas avoir acccès au client des
 
 Comment rendre l'application capable de revoyer de gros resultset (Stream)  
  - JDBC -> queryStream (Ou envoyer les données)
- - MongoDb (Pas trouvé)
+ - MongoDb (Pas trouvé)  
 Rajouter les codecs  
 
 
