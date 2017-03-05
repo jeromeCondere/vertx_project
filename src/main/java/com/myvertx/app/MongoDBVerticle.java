@@ -16,7 +16,7 @@ public class MongoDBVerticle extends AbstractDBVerticle {
 	
 	MongoClient client;
 	private static String DEFAULT_URI = "mongodb://localhost:27017";
-	private static String DB_NAME = "db";
+	private static String DEFAULT_DB_NAME = "db";
 	private static String collection = "test";
 	
 	@Override
@@ -24,7 +24,7 @@ public class MongoDBVerticle extends AbstractDBVerticle {
 	{
 	    JsonObject mongoconfig = new JsonObject()
 	            .put("connection_string", DEFAULT_URI)
-	            .put("db_name", DB_NAME);	
+	            .put("db_name", DEFAULT_DB_NAME);	
 	    client = MongoClient.createShared(vertx, mongoconfig);
 
 	}
@@ -102,7 +102,16 @@ public class MongoDBVerticle extends AbstractDBVerticle {
 	@Override
 	public void query(Message queryMessage) 
 	{
-				
+		if(queryMessage.headers().get("action").equals("delete"))
+		{
+			JsonObject body = (JsonObject) queryMessage.body();
+			JsonObject query = body.getJsonObject("query");
+			
+			//requete naive
+			client.runCommand(collection, query, buffer -> {
+				//if()
+			});
+		}
 	}
 
 }
