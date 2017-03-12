@@ -26,11 +26,9 @@ public class MainLauncher  {
                 
                 final Vertx vertx = res.result();
                 //on deploie tous les vertices ici!
-                //vertx.deployVerticle(MongoDBVerticle.class.getName(),deploymentOptions);
-                //vertx.deployVerticle(AppMongo.class.getName(),deploymentOptions);
-                vertx.deployVerticle(AppJDBC.class.getName());
-                vertx.deployVerticle(JDBCVerticle.class.getName());
-                vertx.deployVerticle(AppUser.class.getName());
+
+                vertx.deployVerticle(MongoUser.class.getName());
+                vertx.deployVerticle(MongoService.class.getName());
                 
             } else {
                 System.out.println("FAIL !!!");
